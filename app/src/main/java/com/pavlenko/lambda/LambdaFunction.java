@@ -9,13 +9,12 @@ import org.apache.logging.log4j.Logger;
 public class LambdaFunction implements RequestHandler<S3Event, Long>
 {
     private static final Logger logger = LogManager.getLogger();
-
+    private final FunctionProcessor processor = new FunctionProcessor();
 
     @Override
     public Long handleRequest(S3Event s3Event, Context context)
     {
         logger.info("Function is invoked");
-        // TODO to implement
-        return null;
+        return processor.process(s3Event);
     }
 }
