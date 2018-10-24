@@ -1,19 +1,19 @@
 [
   {
     "ParameterKey": "S3BucketName",
-    "ParameterValue": "lambda-meetup-cnf-test"
+    "ParameterValue": "meetup-lambda-cnf-test"
   },
   {
     "ParameterKey": "LambdaRoleName",
-    "ParameterValue": "lambda-meetup-cfn-role"
+    "ParameterValue": "meetup-lambda-cfn-role"
   },
   {
     "ParameterKey": "LambdaFunctionName",
-    "ParameterValue": "lambda-meetup-cfn"
+    "ParameterValue": "meetup-lambda-cfn"
   },
   {
     "ParameterKey": "AppJarBucket",
-    "ParameterValue": ""
+    "ParameterValue": "meetup-lambda-src-test"
   },
   {
     "ParameterKey": "AppJarName",

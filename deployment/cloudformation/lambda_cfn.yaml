@@ -23,10 +23,6 @@ Parameters:
     Description: Environment tag
     Type: String
 
-  TagTeam:
-    Description: Team Tag
-    Type: String
-
 Resources:
   LambdaRole:
     Type: AWS::IAM::Role
@@ -89,8 +85,6 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       Runtime: java8
       Tags:
-        - Key: Team
-          Value: !Ref TagTeam
         - Key: Env
           Value: !Ref TagEnv
 
@@ -110,8 +104,6 @@ Resources:
       Tags:
       - Key: Env
         Value: !Ref TagEnv
-      - Key: Team
-        Value: !Ref TagTeam
       NotificationConfiguration:
         LambdaConfigurations:
         - Event: 's3:ObjectCreated:Put'
