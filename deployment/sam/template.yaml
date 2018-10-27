@@ -1,0 +1,119 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Description: Meetup Lambda SAM
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Default: "meetup-lambda-sam-test"
+
+  LambdaRoleName:
+    Type: String
+    Default: "meetup-lambda-sam-role"
+
+  LambdaFunctionName:
+    Type: String
+    Default: "meetup-lambda-sam"
+
+  TagEnv:
+    Description: Environment tag
+    Type: String
+    Default: "Test"
+
+Globals:
+    Function:
+        MemorySize: 320
+        Timeout: 150
+        Runtime: java8
+
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref LambdaRoleName
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+
+  LambdaS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "LambdaS3Policy"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${S3BucketName}"
+              - !Sub "arn:${AWS::Partition}:s3:::${S3BucketName}/*"
+      Roles:
+        - !Ref LambdaRole
+
+  LambdaPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "LambdaPolicy"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource: "*"
+      Roles:
+          - !Ref LambdaRole
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+      Tags:
+      - Key: Env
+        Value: !Ref TagEnv
+
+  BucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt S3Bucket.Arn
+
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../app/target/app-1.0-SNAPSHOT.jar
+      FunctionName: !Ref LambdaFunctionName
+      Handler: "com.pavlenko.lambda.LambdaFunction::handleRequest"
+      ReservedConcurrentExecutions: 1
+      Role: !GetAtt LambdaRole.Arn
+      Tags:
+        Env: !Ref TagEnv
+      Events:
+        BucketEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events:
+              - 's3:ObjectCreated:Put'
+            Filter:
+              S3Key:
+                Rules:
+                  -
+                    Name: prefix
+                    Value: "input"
+
