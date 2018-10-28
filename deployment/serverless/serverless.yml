@@ -1,0 +1,33 @@
+service: meetup-lambda-sls
+
+custom: ${file(${opt:stage}/var.yml)}
+
+provider:
+  name: aws
+  runtime: java8
+  memorySize: 512
+  region: ${self:custom.region}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:GetObject"
+        - "s3:PutObject"
+      Resource:
+        - "arn:aws:s3:::${self:custom.s3-bucket-name}"
+        - "arn:aws:s3:::${self:custom.s3-bucket-name}/*"
+
+package:
+  artifact: ../../app/target/app-1.0-SNAPSHOT.jar
+
+functions:
+  lambda-function:
+    name: ${self:custom.lambda-function-name}
+    handler: com.pavlenko.lambda.LambdaFunction::handleRequest
+    events:
+      - s3:
+          bucket: ${self:custom.s3-bucket-name}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: input/
+    tags:
+      Env: ${self:custom.tag-env}

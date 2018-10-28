@@ -1,0 +1,4 @@
+region: eu-central-1
+s3-bucket-name: meetup-lambda-sls-test
+lambda-function-name: meetup-lambda-sls
+tag-env: Test
