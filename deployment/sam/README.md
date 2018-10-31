@@ -1,3 +1,5 @@
+#AWS Serverless Application Model
+
     # to create project from scratch
     sam init --runtime java8
 

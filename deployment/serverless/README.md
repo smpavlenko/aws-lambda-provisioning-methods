@@ -1,3 +1,5 @@
+#Serverless Framework
+
     # to create project from scratch
     sls create --template aws-java8 --path my-service
 
