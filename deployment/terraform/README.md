@@ -1,7 +1,10 @@
+
+**To deploy**
+
     # to initialize a Terraform working directory
     terraform init
 
-**To deploy**
+<br/>
 
     # to see the incoming changes in infrastructure
     terraform plan
