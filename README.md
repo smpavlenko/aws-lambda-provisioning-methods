@@ -12,6 +12,7 @@ Workflow:
 - Lambda function creates output file and puts it back to S3 bucket (to /output folder)
 
 The examples of usage are in corresponding README.md files.
+The presentation is available under [doc/AWS_Meetup_Creating_AWS_Lambda.pptx](doc/AWS_Meetup_Creating_AWS_Lambda.pptx)
 
 Follows the file layout of the repository:
 
